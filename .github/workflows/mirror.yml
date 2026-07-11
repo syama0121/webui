@@ -1,0 +1,24 @@
+name: mirror-image
+on: workflow_dispatch
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull from ghcr.io
+        run: docker pull ghcr.io/open-webui/open-webui:main
+
+      - name: Tag for Aliyun
+        run: |
+          docker tag ghcr.io/open-webui/open-webui:main \
+            crpi-ah0yceuvcawevbyl.cn-chengdu.personal.cr.aliyuncs.com/openwebuiback/webui:main
+
+      - name: Login to Aliyun
+        run: |
+          echo "${{ secrets.ALIYUN_PASSWORD }}" | docker login \
+            --username="${{ secrets.ALIYUN_USERNAME }}" \
+            --password-stdin \
+            crpi-ah0yceuvcawevbyl.cn-chengdu.personal.cr.aliyuncs.com
+
+      - name: Push to Aliyun
+        run: |
+          docker push crpi-ah0yceuvcawevbyl.cn-chengdu.personal.cr.aliyuncs.com/openwebuiback/webui:main
