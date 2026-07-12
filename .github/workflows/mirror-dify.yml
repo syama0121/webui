@@ -8,18 +8,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: langgenius/dify-api
-            tag: "1.15.0"
-            target: dify-api
-          - image: langgenius/dify-web
-            tag: "1.15.0"
-            target: dify-web
-          - image: langgenius/dify-sandbox
-            tag: "0.2.15"
-            target: dify-sandbox
-          - image: langgenius/dify-plugin-daemon
-            tag: "0.4.1-local"
-            target: dify-plugin-daemon
+		- image: langgenius/dify-api
+		  tag: "1.16.0-rc1"
+		  target: dify-api
+		- image: langgenius/dify-web
+		  tag: "1.16.0-rc1"
+		  target: dify-web
+		- image: langgenius/dify-sandbox
+		  tag: "0.2.15"
+		  target: dify-sandbox
+		- image: langgenius/dify-plugin-daemon
+		  tag: "0.6.3-local"
+		  target: dify-plugin-daemon
+		- image: langgenius/dify-agent-backend
+		  tag: "1.16.0-rc1"
+		  target: dify-agent-backend
+		- image: langgenius/dify-agent-local-sandbox
+		  tag: "1.16.0-rc1"
+		  target: dify-agent-local-sandbox
     steps:
       - name: Pull from Docker Hub
         run: docker pull ${{ matrix.image }}:${{ matrix.tag }}
