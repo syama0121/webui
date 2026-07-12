@@ -1,0 +1,41 @@
+name: mirror-dify
+
+on: workflow_dispatch
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: langgenius/dify-api
+            tag: "1.15.0"
+            target: dify-api
+          - image: langgenius/dify-web
+            tag: "1.15.0"
+            target: dify-web
+          - image: langgenius/dify-sandbox
+            tag: "0.2.15"
+            target: dify-sandbox
+          - image: langgenius/dify-plugin-daemon
+            tag: "0.4.1-local"
+            target: dify-plugin-daemon
+    steps:
+      - name: Pull from Docker Hub
+        run: docker pull ${{ matrix.image }}:${{ matrix.tag }}
+
+      - name: Tag for Aliyun
+        run: |
+          docker tag ${{ matrix.image }}:${{ matrix.tag }} \
+          crpi-ah0yceuvcawevbyl.cn-chengdu.personal.cr.aliyuncs.com/openwebuiback/${{ matrix.target }}:${{ matrix.tag }}
+
+      - name: Login to Aliyun
+        run: |
+          echo "${{ secrets.ALIYUN_PASSWORD }}" | docker login \
+          --username="${{ secrets.ALIYUN_USERNAME }}" \
+          --password-stdin \
+          crpi-ah0yceuvcawevbyl.cn-chengdu.personal.cr.aliyuncs.com
+
+      - name: Push to Aliyun
+        run: |
+          docker push crpi-ah0yceuvcawevbyl.cn-chengdu.personal.cr.aliyuncs.com/openwebuiback/${{ matrix.target }}:${{ matrix.tag }}
