@@ -1,0 +1,26 @@
+name: mirror-hermes-agent
+
+on: workflow_dispatch
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull from Docker Hub
+        run: docker pull nousresearch/hermes-agent:latest
+
+      - name: Tag for Aliyun
+        run: |
+          docker tag nousresearch/hermes-agent:latest \
+          crpi-ah0yceuvcawevbyl.cn-chengdu.personal.cr.aliyuncs.com/openwebuiback/hermes-agent:latest
+
+      - name: Login to Aliyun
+        run: |
+          echo "${{ secrets.ALIYUN_PASSWORD }}" | docker login \
+          --username="${{ secrets.ALIYUN_USERNAME }}" \
+          --password-stdin \
+          crpi-ah0yceuvcawevbyl.cn-chengdu.personal.cr.aliyuncs.com
+
+      - name: Push to Aliyun
+        run: |
+          docker push crpi-ah0yceuvcawevbyl.cn-chengdu.personal.cr.aliyuncs.com/openwebuiback/hermes-agent:latest
